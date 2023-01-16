@@ -1,0 +1,150 @@
+{% extends "../subbase.html" %}
+{% block title %}Student Show Active Logbook {% endblock %}
+{% block sub_content %}
+
+
+
+
+
+        <div class="b-example-divider bg-light"></div>
+        <section class="p-5">
+            <div class="container">
+                <div>
+                    <h2 class="text-center text-dark m-5">View Logbook </h2>
+                </div>
+
+
+
+
+
+                <div class="row row-cols-1 row-cols-md-1 g-4">
+
+
+                    <div class="col">
+                        <div class="card h-100 shadow-lg">
+                            <div class="card-body p-3">
+                                <div class="text-start mt-3">
+                                    <div
+                                        class="row row-cols-1 row-cols-md-2 g-4 align-items-center justify-content-center">
+                                        <p class="h6 col">Patient name :</p>
+                                        <p class="lead col">{{approvedlogbook_VAR.logbook_patient.patient_user.name}}</p>
+                                    </div>
+                                    <hr>
+
+                                    <div
+                                        class="row row-cols-1 row-cols-md-2 g-4 align-items-center justify-content-center">
+                                        <p class="h6 col">Email:</p>
+                                        <p class="lead col">{{approvedlogbook_VAR.logbook_patient.patient_user.email}}</p>
+                                    </div>
+                                    <hr>
+                                    <div
+                                        class="row row-cols-1 row-cols-md-2 g-4 align-items-center justify-content-center">
+                                        <p class="h6 col">Phone number:</p>
+                                        <p class="lead col"> {{approvedlogbook_VAR.logbook_patient.patient_user.mobile}} </p>
+                                    </div>
+                                    <hr>
+                                    <div
+                                        class="row row-cols-1 row-cols-md-2 g-4 align-items-center justify-content-center">
+                                        <p class="h6 col">Date of brith:</p>
+                                        <p class="lead col">{{approvedlogbook_VAR.logbook_patient.patient_user.birthdate}} </p>
+                                    </div>
+                                    <hr>
+                                    <div
+                                        class="row row-cols-1 row-cols-md-2 g-4 align-items-center justify-content-center">
+                                        <p class="h6 col">Gender: </p>
+                                        <p class="lead col">{{approvedlogbook_VAR.logbook_patient.patient_user.gender}}  </p>
+                                    </div>
+                                    <hr>
+                                    <div
+                                        class="row row-cols-1 row-cols-md-2 g-4 align-items-center justify-content-center">
+                                        <p class="h6 col">Address:</p>
+                                        <p class="lead col"> {{approvedlogbook_VAR.logbook_patient.patient_user.address}}  </p>
+                                    </div>
+
+                                    <hr>
+                                    <div
+                                        class="row row-cols-1 row-cols-md-2 g-4 align-items-center justify-content-center">
+                                        <p class="h6 col">Approved Datetime:</p>
+                                        <p class="lead col">{{approvedlogbook_VAR.logbook_date_Approved}} </p>
+                                    </div>
+                                    <hr>
+                                    <div
+                                    class="row row-cols-1 row-cols-md-2 g-4 align-items-center justify-content-center">
+                                    <p class="h6 col">Course name:</p>
+                                    <p class="lead col">{{approvedlogbook_VAR.logbook_course.course_name}}</p>
+                                </div>
+                                <hr>
+                                <div
+                                class="row row-cols-1 row-cols-md-2 g-4 align-items-center justify-content-center">
+                                <p class="h6 col">Student:</p>
+                                <p class="lead col">{{approvedlogbook_VAR.logbook_student.student_user.name}}</p>
+                            </div>
+                            <hr>
+                            <div
+                            class="row row-cols-1 row-cols-md-2 g-4 align-items-center justify-content-center">
+                            <p class="h6 col">Professor:</p>
+                            <p class="lead col">{{approvedlogbook_VAR.logbook_professor.prof_user.name}}</p>
+                        </div>
+                        <hr>
+
+                                    <div
+                                    class="row row-cols-1 row-cols-md-2 g-4 align-items-center justify-content-center">
+                                    <p class="h6 col">X-ray image:</p>
+                                    {% if approvedlogbook_VAR.logbook_treatment.treatment_diagnosis.patient_xray %}
+                                    <p class="lead col"> <a href="{{approvedlogbook_VAR.logbook_treatment.treatment_diagnosis.patient_xray.url}}"> Here link to X-ray Image</a></p>
+                                    {% else %}
+                                    <p class="lead col">No X-ray Image</p>
+                                    {% endif %}
+                                </div>
+                                <hr>
+                                
+                                    <a href="{% url 'core:student_show_patient' approvedlogbook_VAR.logbook_patient.id %}" class="btn btn-lg btn-success col-12">Show Patient Profile</a>
+                                   
+
+
+
+                                </div>
+                            </div>
+
+
+
+                        </div>
+
+                    </div>
+
+
+
+                </div>
+            </div>
+        </section>
+
+        <section class="bg-light shadow-lg align-items-center justify-content-center ">
+            <div class="container mt-4 " style="height: 400px;">
+    
+                    <h2 class="text-start text-dark">LogBook Report</h2>
+    
+                    
+    
+                    <div class=" border rounded mt-3 w-100 bg-white " style="height: 200px;">
+                        {% if approvedlogbook_VAR.logbook_report %}
+                        <p class="lead col"> <a class="text-dark" href="{{approvedlogbook_VAR.logbook_report.url}}">{{approvedlogbook_VAR.logbook_report}}</a> </p>
+    
+                        {% else %}
+                        <p class="lead col"> <a class="text-dark" href="">No Report Privided</a> </p>
+    
+                        
+                        {% endif %}
+    
+                    </div>
+
+            </div>
+       
+        </section>
+
+
+
+
+        <div class="b-example-divider text-bg-light"></div>
+
+
+{% endblock sub_content %}

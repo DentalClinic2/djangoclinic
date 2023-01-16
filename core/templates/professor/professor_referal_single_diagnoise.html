@@ -1,0 +1,45 @@
+{% extends "../base.html" %}
+{% load static %}
+
+{% block title %}professor Referal{% endblock %}
+{% block content %} 
+
+<section class="bg-light shadow-lg">
+
+    <div class="container mt-4">
+
+        <h2 class="text-center text-dark">View Diagnostic For Patient</h2>
+        <form class="account-form"  method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <label>{{ diagnosis_form.diagnosis_course.label }}<span class="text-muted small">
+                (Required)</span></label>
+                {{ diagnosis_form.diagnosis_course }} 
+                
+                    
+            <label>{{ diagnosis_form.patient_xray.label}}<span class="text-muted small">
+                (Required)</span></label>
+            {{ diagnosis_form.patient_xray }} 
+            <label>{{ diagnosis_form.patient_chart.label}}<span class="text-muted small">
+              (Required)</span></label>
+          {{ diagnosis_form.patient_chart }} 
+   
+
+            <div class="card-footer p-4 pt-0 border-top-0 ">
+                <div class="text-center">
+                    <button class="btn  mt-auto btn-success w-50 rounded-pill" type="submit" >Referal This
+                        Appointment</button>
+  
+
+                </div>
+                
+            </div>
+        </form>
+
+
+    </div>
+
+</section>
+
+
+
+{% endblock %}

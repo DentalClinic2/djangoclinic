@@ -1,0 +1,50 @@
+{% extends "../sub_base.html" %}
+{% load static %}
+{% block title %}Show Profile{% endblock %}
+{% block sub_content %}
+
+<div class="container">
+    <div class="row my-5">
+        <div class="col-md-8">
+            <div>
+                <div>
+                    <h3>Profile Summery</h3>
+                </div>
+                <div>
+                    <ul>
+                        <li> Name: <span>{{profilevar.name}}</span></li>
+                        <li>Email: <span>{{profilevar.email}}</span></li>
+                        <li>Phone: <span>{{profilevar.mobile}}</span></li>
+                        <li>Gender: <span>{{profilevar.gender}}</span></li>
+                        <li>BirthDate: <span>{{profilevar.birthdate}}</span></li>
+                        <li>address: <span>{{profilevar.address}}</span></li>
+                        <li>nationality: <span>{{profilevar.nationality}}</span></li>
+                        
+                    </ul>
+                    
+                </div>
+                <div class="p-5">
+                    <a class=" btn btn-outline-success w-100" href="{% url 'accounts:edit_details' %}">Edit Profile</a>
+
+                </div>
+
+            </div>
+
+
+        </div>
+        <div class="col-md-4">
+            {% if profilevar.profile_img %}
+            <div class="w-100 h-100 rounded" style="background-image: url('{{profilevar.profile_img.url}}'); background-size: cover; background-position: center; background-repeat: no-repeat;">
+            </div> 
+            {% else %}
+            
+            <div class="w-100 h-100 rounded" style="background-image: url('{% static 'icons/no-picture-available.jpg' %}'); background-size: cover; background-position: center; background-repeat: no-repeat;">
+            </div> 
+            {% endif %}
+    </div>
+</div>
+
+    {% endblock sub_content %}
+
+
+

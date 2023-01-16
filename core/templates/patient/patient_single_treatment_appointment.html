@@ -1,0 +1,65 @@
+{% extends "../subbase.html" %}
+{% block title %}Patient Show Treatment{% endblock %}
+{% block sub_content %}
+
+
+
+<div class="b-example-divider bg-light"></div>
+
+<section class="p-5 w-100">
+    <div class="container p-5">
+      <div class="row">
+        
+        <div class="col-lg-12 col-md-12 mb-4 text-center">
+          <div class="card h-100 shadow-lg">
+            <div class="card-body p-2">
+                <div class="text-center">
+                  
+                  <p class="h6">Treatment Appointment ID:</p>
+                    <p class="lead">{{single_treatment_Var.id}}</span>
+                  
+                    <hr>
+                    
+                    <p class="h6">Appointment date:</p>
+                    <p class="lead"> {{single_treatment_Var.treatment_date}}</span>
+                    
+                    <hr>
+                    
+                    <p class="h6">Student name:</p>
+                    <p class="lead"> {{single_treatment_Var.treatment_student.student_user.name}} </p>
+                    
+                    <hr>
+                    
+                    <p class="h6">phone number:</p>
+                    <p class="lead">{{single_treatment_Var.treatment_student.student_user.mobile}}</p>
+                  
+                  <hr>
+                    <p class="h6">Professor Name:</p> 
+                    <p class="lead">{{single_treatment_Var.treatment_diagnosis.diagnosis_professor.prof_user.name}} </p>
+                </div>
+            </div>
+         
+
+
+            <div class="card-body text-center p-2 ">
+            <a href="{% url 'core:patient_cancel_treatment_appointment' single_treatment_Var.id %}" class="text-decoration-none">
+                <button class="btn btn-outline-danger btn-lg" >Cancel Treatment Apointment</button>
+              </a>
+              <a href="{% url 'core:patient_pending_treatment_appointment' single_treatment_Var.id %}" class="text-decoration-none">
+                <button class="btn btn-outline-info btn-lg" >Pending Treatment Apointment</button>
+              </a>
+            </div>
+          </div>
+        </div>
+
+      </div>    
+    </div>
+  </section>
+
+<div class="b-example-divider text-bg-light"></div>
+
+
+{% endblock sub_content %}
+
+
+

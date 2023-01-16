@@ -1,0 +1,61 @@
+{% extends "../subbase.html" %}
+{% block title %}Patient Show Diagnosis{% endblock %}
+{% block sub_content %}
+
+
+
+
+<div class="b-example-divider text-bg-light"></div>
+
+<section class="p-5 w-100">
+  <div class="container p-5">
+    <div class="row">
+      
+      <div class="col-lg-12 col-md-12 mb-4 text-center">
+        <div class="card h-100 shadow-lg">
+          <div class="card-body p-2">
+            <div class="text-center">
+              
+              <p class="h6">Diagnosis ID:</p>
+              <p class="lead">{{single_diagnosis_Var.id}} </p>
+              
+                <hr>
+                
+                <p class="h6">Appointment date:</p>
+                <p class="lead"> {{single_diagnosis_Var.diagnosis_date}}</p>
+                
+                <hr>
+                
+                <p class="h6">Professor name:</p>
+                <p class="lead"> {{single_diagnosis_Var.diagnosis_professor.prof_user.name}} </p>
+                
+                <hr>
+                
+                <p class="h6">professor Email: </p>
+                <p class="lead">{{single_diagnosis_Var.diagnosis_professor.prof_user.email}} </p>
+              
+              <hr>
+                <p class="h6">Professor ID:</p> 
+                <p class="lead">{{single_diagnosis_Var.diagnosis_professor.id}}  </p>
+                
+            </div>
+          </div>
+       
+
+
+          <div class="card-body text-center ">
+          <a href="{% url 'core:patient_cancel_diagnosis_appointment' single_diagnosis_Var.id %}" class="text-decoration-none">
+              <button class="btn btn-outline-danger btn-lg" >Cancel Diagognise Apointment</button>
+            </a>
+          </div>
+        </div>
+      </div>
+
+    </div>    
+  </div>
+</section>
+
+<div class="b-example-divider text-bg-light"></div>
+
+
+{% endblock sub_content %}

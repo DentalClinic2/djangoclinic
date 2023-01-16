@@ -1,0 +1,67 @@
+{% extends "../subbase.html" %}
+{% block title %}Student Show Pending Treatments{% endblock %}
+{% block sub_content %}
+
+
+
+<div class="b-example-divider bg-light"></div>
+<section class="py-5 bg-light mt-5">
+
+
+  <div class="container px-4 px-lg-5 mt-5">
+    {% if not AllPendingTreatment_VAR %}
+    <div class="text-center container border m-5">
+    <p class="h1">No Pending Treatment </p>
+    </div>
+    {% else %}
+      <h2 class="fw-bolder mb-5">Show All Pending appointment</h2>
+      
+
+      <div class="row row-cols-1 row-cols-lg-2 g-4 justify-content-center">
+  
+
+        {% for treatment in AllPendingTreatment_VAR %}
+          <div class="col">
+              <div class="card h-100 border-primary">
+                  
+                  <div class="card-body p-2">
+                      <div class="text-center">
+                        
+                        <p class="h6">Treatment ID:</p>
+                          <p class="lead">{{treatment.id}}</p>
+                        
+                          
+                                
+                          <hr>
+                          
+                          <p class="h6">Patient Email: </p>
+                          <p class="lead">{{treatment.treatment_patient.patient_user.email}} </p>
+                        
+                        <hr>
+                          <p class="h6">Patient Name:</p> 
+                          <p class="lead">{{treatment.treatment_patient.patient_user.name}} </p>
+                          <hr>
+                          <p class="h6">Course Name:</p> 
+                          <p class="lead">{{treatment.treatment_course.course_name}} </p>
+                          
+                      </div>
+                  </div>
+                  
+                  <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+                      <div class="text-center"><a class="btn btn-outline-success mt-auto" href="{% url 'core:student_single_pending_treatment' treatment.id %}">Show This Appointment</a></div>
+                  </div>
+              </div>
+          </div>
+
+          {% endfor %}
+
+
+
+      </div>
+  </div>
+  {% endif %}
+</section>
+<div class="b-example-divider text-bg-light"></div>
+
+
+{% endblock sub_content %}

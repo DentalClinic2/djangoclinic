@@ -1,0 +1,172 @@
+{% extends "../subbase.html" %}
+{% block title %}Student Show Active Treatment{% endblock %}
+{% block sub_content %}
+
+
+        <div class="b-example-divider bg-light"></div>
+        <section class="p-5">
+            <div class="container">
+                <div>
+                    <h2 class="text-center text-dark mb-5">View Treatment For Patient</h2>
+                </div>
+
+
+
+    
+
+                <div class="row row-cols-1 row-cols-md-2 g-4">
+
+
+                    <div class="col">
+                        <div class="card h-100 shadow-lg">
+                            <div class="card-body p-3">
+                                <div class="text-start mt-3">
+                                    <div
+                                        class="row row-cols-1 row-cols-md-2 g-4 align-items-center justify-content-center">
+                                        <p class="h6 col">Patient name :</p>
+                                        <p class="lead col">{{Activetreatment_VAR.treatment_patient.patient_user.name}}</p>
+                                    </div>
+                                    <hr>
+
+                                    <div
+                                        class="row row-cols-1 row-cols-md-2 g-4 align-items-center justify-content-center">
+                                        <p class="h6 col">Email:</p>
+                                        <p class="lead col">{{Activetreatment_VAR.treatment_patient.patient_user.email}}</p>
+                                    </div>
+                                    <hr>
+                                    <div
+                                        class="row row-cols-1 row-cols-md-2 g-4 align-items-center justify-content-center">
+                                        <p class="h6 col">Phone number:</p>
+                                        <p class="lead col">{{Activetreatment_VAR.treatment_patient.patient_user.mobile}}</p>
+                                    </div>
+                                    <hr>
+                                    <div
+                                        class="row row-cols-1 row-cols-md-2 g-4 align-items-center justify-content-center">
+                                        <p class="h6 col">Date of brith:</p>
+                                        <p class="lead col"> {{Activetreatment_VAR.treatment_patient.patient_user.birthdate}} </p>
+                                    </div>
+                                    <hr>
+                                    <div
+                                        class="row row-cols-1 row-cols-md-2 g-4 align-items-center justify-content-center">
+                                        <p class="h6 col">Gender: </p>
+                                        <p class="lead col">{{Activetreatment_VAR.treatment_patient.patient_user.gender}} </p>
+                                    </div>
+                                    <hr>
+                                    <div
+                                        class="row row-cols-1 row-cols-md-2 g-4 align-items-center justify-content-center">
+                                        <p class="h6 col">Address:</p>
+                                        <p class="lead col"> {{Activetreatment_VAR.treatment_patient.patient_user.address}} </p>
+                                    </div>
+
+                                    <hr>
+                                    <div
+                                        class="row row-cols-1 row-cols-md-2 g-4 align-items-center justify-content-center">
+                                        <p class="h6 col">Treatment Datetime:</p>
+                                        <p class="lead col">{{Activetreatment_VAR.treatment_date}}</p>
+                                    </div>
+                                    <hr>
+                                    <div
+                                    class="row row-cols-1 row-cols-md-2 g-4 align-items-center justify-content-center">
+                                    <p class="h6 col"> x-ray image:</p>
+                                    {% if Activetreatment_VAR.treatment_diagnosis.patient_xray %}
+                                    <p class="lead col"> <a href="{{Activetreatment_VAR.treatment_diagnosis.patient_xray.url}}">Link to X-ray img</a> </p>
+                                    {% else %}
+                                    <p class="lead col"> <a href="#">NO X-Ray Img</a> </p>
+                                    {% endif %}
+                                </div>
+                                <hr>
+                                <div
+                                class="row row-cols-1 row-cols-md-2 g-4 align-items-center justify-content-center">
+                                <p class="h6 col"> Course name:</p>
+                                <p class="lead col"> <a href="student_show_single_course.html" class="text-dark">{{Activetreatment_VAR.treatment_course.course_name}}</a>  </p>
+                            </div>
+                                
+
+
+
+                                </div>
+                            </div>
+
+
+
+                        </div>
+
+                    </div>
+
+                    <div class="col">
+                        {% if not ALLFinsishedLogbooks_VAR %}
+                        <div class="text-center container border m-5">
+                            <p class="h1">No LogBook </p>
+                        </div>
+                        {% else %}
+                        <table class="table table-striped table-hover caption-top">
+                            <caption class="text-dark fw-bold">previous appointments</caption>
+                            <thead>
+                                <tr>
+                                    <th scope="col">LogBook_ID</th>
+                                    <th scope="col">Datetime</th>
+                                    <th scope="col">Student</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                              {% for logbook in ALLFinsishedLogbooks_VAR %}  
+                                <tr>
+                                    <th scope="row"><a class="text-dark" href="{% url 'core:student_show_logbook' logbook.id %}">{{logbook.id}}</a></th>
+                                    <td>{{logbook.logbook_date_Approved}}</td>
+                                    <td>{{logbook.logbook_student.student_user.name}}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        {% endif %}
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <section class="bg-light shadow-lg">
+
+            <div class="container mt-4">
+ 
+
+
+
+                    <div class="card-footer p-4 pt-0 border-top-0 ">
+                        <div class="text-center"><a class="btn  mt-auto btn-success" href="{% url 'core:student_write_logbook_report' Activetreatment_VAR.id  %}">Write LogBook</a>
+                                <a class="btn  mt-auto btn-danger" href="{% url 'core:student_cancel_treatment' Activetreatment_VAR.id %}">Delete This
+                                    Appointment</a>
+                        </div>
+                        
+                    </div>
+               
+            </div>
+        </section>
+
+        
+        <div class="b-example-divider text-bg-light"></div>
+
+        <section class="bg-light shadow-lg">
+            <div class="container mt-4 text-break " style="height: 400px;">
+    
+                    <h2 class="text-center text-dark">Diagnostic Notations For Patient</h2>
+    
+                    <div class=" border rounded mt-3 w-100 bg-white text-dark " style="height: 200px;">
+                        {{Activetreatment_VAR.treatment_diagnosis.patient_chart}}
+                    </div>
+    <p class="fst-italic lead text-center ">Written By Professor <br>{{Activetreatment_VAR.treatment_diagnosis.diagnosis_professor.prof_user.name}}</p>
+    
+            </div>
+            </section>
+
+
+
+
+
+
+
+        <div class="b-example-divider text-bg-light"></div>
+
+
+
+ {% endblock sub_content %}

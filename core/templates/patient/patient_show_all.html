@@ -1,0 +1,129 @@
+{% extends "../subbase.html" %}
+{% block title %}Patient Show All{% endblock %}
+{% block sub_content %}
+
+
+
+
+
+
+
+<section class="py-5 bg-light mt-5">
+  <div class="container px-4 px-lg-5 mt-5">
+    <h2 class="fw-bolder mb-4">diagnosis appointment</h2>
+    <div class="row row-cols-1 row-cols-lg-2 g-4 justify-content-center">
+
+      {% if not ALLdiagnosis_Var %}
+      <div class="text-center container border m-5">
+      <p class="h1">No Dignosis </p>
+      </div>
+      {% endif %}
+
+      {% for diagnosis in ALLdiagnosis_Var  %}
+
+      <div class="col  ">
+        <div class="card h-100 border-success">
+
+          <div class="card-body p-2">
+            <div class="text-center">
+
+              <p class="h6">diagnosis ID:</p>
+              <p class="lead">{{diagnosis.id}}</span>
+
+                <hr>
+
+              <p class="h6"> Diagnosis Appointment date:</p>
+              <p class="lead"> {{diagnosis.diagnosis_date }}</span>
+
+                <hr>
+
+              <p class="h6">Professor name:</p>
+              <p class="lead"> {{diagnosis.diagnosis_professor.prof_user.name}} </p>
+
+              <hr>
+
+              <p class="h6">professor Email: </p>
+              <p class="lead">{{diagnosis.diagnosis_professor.prof_user.email}} </p>
+
+              <hr>
+              <p class="h6">Professor ID:</p>
+              <p class="lead">{{diagnosis.diagnosis_professor.id}} </p>
+
+              <hr>
+              <p class="h6">Diagnosis Status:</p>
+              <p class="lead text-bg-success rounded-pill">{{diagnosis.diagnosis_status }}:Active </p>
+            </div>
+          </div>
+
+          <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+            <div class="text-center"><a class="btn btn-outline-primary mt-auto" href=" {% url 'core:patient_show_single_diagnosis' diagnosis.id  %}">Show This Appointment</a></div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+
+
+
+    </div>
+  </div>
+</section>
+
+<div class="b-example-divider bg-light"></div>
+<section class="py-5 bg-light mt-5">
+<div class="container px-4 px-lg-5 mt-5">
+  <h2 class="fw-bolder mb-4">Show Treatment appointment</h2>
+  <div class="row row-cols-1 row-cols-lg-3 g-4 justify-content-center">
+{% if not Alltreatment_Var %}
+
+<div class="text-center container border m-5">
+<p class="h1">No Treatment </p>
+</div>
+
+{% endif %}
+    {% for treatment in Alltreatment_Var %}
+      <div class="col">
+          <div class="card h-100 border-primary">
+              
+              <div class="card-body p-2">
+                  <div class="text-center">
+                    
+                    <p class="h6">Treatment Appointment ID:</p>
+                      <p class="lead">{{treatment.id}}</p>
+                    
+                      <hr>
+                      
+                      <p class="h6">Appointment date:</p>
+                      <p class="lead"> {{treatment.treatment_date}} </p>
+                      
+                      <hr>
+                      
+                      <p class="h6">Student name:</p>
+                      <p class="lead"> {{treatment.treatment_student.student_user.name}} </p>
+                      
+                      <hr>
+                      
+                      <p class="h6">phone number:</p>
+                      <p class="lead">{{treatment.treatment_student.student_user.mobile}}</p>
+                    
+                      <hr>
+                      <p class="h6">Treatment Status:</p>
+                      <p class="lead text-bg-success rounded-pill">{{treatment.treatment_status }}:Active </p>
+                      
+                  </div>
+              </div>
+              
+              <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+                  <div class="text-center"><a class="btn btn-outline-success mt-auto" href="{% url 'core:patient_show_single_treatment' treatment.id  %}">Show This Appointment</a></div>
+              </div>
+          </div>
+      </div>
+    {% endfor %}
+
+
+  </div>
+</div>
+</section>
+<div class="b-example-divider text-bg-light"></div>
+
+
+{% endblock sub_content %}

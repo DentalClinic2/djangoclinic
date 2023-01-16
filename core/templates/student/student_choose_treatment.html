@@ -1,0 +1,68 @@
+{% extends "../subbase.html" %}
+{% block title %}Student Choose Treatments{% endblock %}
+{% block sub_content %}
+
+
+<div class="b-example-divider bg-light"></div>
+<section class="py-5 bg-light mt-5">
+  <div class="container px-4 px-lg-5 mt-5">
+    {% if not notreservedtreatment_Var %}
+    <div class="text-center container border m-5">
+    <p class="h1">No More Treatment Appointment </p>
+    </div>
+    
+    {% else %}
+      <h2 class="fw-bolder mb-4">Student Take an appointment</h2>
+      <div class="row row-cols-1 row-cols-lg-3 g-4 justify-content-center">
+        {% for treatment in notreservedtreatment_Var %}
+
+
+
+
+        <div class="col">
+            <div class="card h-100 border-primary">
+                
+                <div class="card-body p-2">
+                    <div class="text-center">
+                      
+                      <p class="h6">Treatment ID:</p>
+                        <p class="lead">{{treatment.id}}</span>
+                      
+                        <hr>
+
+                        <p class="h6">Diagnostic Professor:</p>
+                        <p class="lead"> {{treatment.treatment_diagnosis.diagnosis_professor.prof_user.name}} </p>
+                        
+                        <hr>
+                        
+                        <p class="h6">professor Email: </p>
+                        <p class="lead">{{treatment.treatment_diagnosis.diagnosis_professor.prof_user.email}} </p>
+                      
+                      <hr>
+                        <p class="h6">Patient Name:</p> 
+                        <p class="lead">{{treatment.treatment_patient.patient_user.name}} </p>
+                        <hr>
+                        <p class="h6">Course Name:</p> 
+                        <p class="lead">{{treatment.treatment_course.course_name}} </p>
+                        
+                    </div>
+                </div>
+                
+                <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+                    <div class="text-center mt-2"><a class="btn btn-outline-success mt-auto" href="{% url 'core:student_show_treatment' treatment.id %}">Show This Treatment</a></div>
+                    <div class="text-center mt-2"><a class="btn btn-outline-primary mt-auto" href="{% url 'core:student_show_patient' treatment.treatment_patient.id  %}">Show Patient Profile</a></div>
+
+                </div>
+            </div>
+        </div>
+
+
+        {% endfor %}
+      </div>
+    {% endif %}
+  </div>
+</section>
+<div class="b-example-divider text-bg-light"></div>
+
+
+{% endblock sub_content %}

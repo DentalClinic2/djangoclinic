@@ -1,0 +1,21 @@
+{% extends "./base.html" %}
+{% load static %}
+
+{% block content %}
+<section class="bg-dark text-light mt-1  bg-white" style="height: 75vh; min-height: 400px; background-image: url('{% static 'icons/Dentist05.jpg' %}'); background-size: cover ; background-position: center ; background-repeat: no-repeat;">
+<div class="container h-100 ">
+  <div class="row h-100 align-items-center">
+    <div class="col-12 text-left col bg-dark bg-opacity-50 rounded " style="width: 18rem;">
+      <h1 class="fw-bold text-light "> <i>Welcome</i> </h1>
+      <p class=" fw-bold text-light ">Name :{{request.user.name}}</p>
+      <p class=" fw-bold text-light ">ID</p>
+    </div>
+  </div>
+</div>
+</section>
+{% block sub_content %}{% endblock %}
+
+{% endblock %}
+
+
+

@@ -1,0 +1,123 @@
+{% extends "../subbase.html" %}
+{% block title %}Professor Show All{% endblock %}
+{% block sub_content %}
+
+
+
+<div class="b-example-divider bg-light"></div>
+<section class="py-5 bg-light mt-5">
+  <div class="container px-4 px-lg-5 mt-5">
+    <h2 class="fw-bolder mb-4">Referal diagnosis appointment</h2>
+    <div class="row row-cols-1 row-cols-lg-2 g-4 justify-content-center">
+
+      {% if not allreserved_diagnosis_Var %}
+      <div class="text-center container border m-5">
+      <p class="h1">No Reserved Dignosis </p>
+      </div>
+      {% endif %}
+
+      {% for diagnosis in allreserved_diagnosis_Var %}
+
+      <div class="col  ">
+        <div class="card h-100 border-success">
+
+          <div class="card-body p-2">
+            <div class="text-center">
+                        
+              <p class="h6">Diagnosis ID:</p>
+                <p class="lead">{{diagnosis.id}}</p>
+              
+                <hr>
+                
+                <p class="h6">Diagnosis Appointment date:</p>
+                <p class="lead"> {{diagnosis.diagnosis_date}} </p>
+                
+                <hr>
+                <p class="h6">Patient Name:</p> 
+                <p class="lead">{{diagnosis.diagnosis_patient.patient_user.name}} </p>
+
+                <hr>
+                <p class="h6">Patient Email:</p> 
+                <p class="lead">{{diagnosis.diagnosis_patient.patient_user.email}} </p>
+
+                <hr>
+                <p class="h6">Diagnosis Status:</p>
+                <p class="lead text-bg-success rounded-pill">{{diagnosis.diagnosis_status }}:Active </p>
+                
+            </div>
+          </div>
+
+          <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+            <div class="text-center"><a class="btn btn-outline-success mt-auto" href=" {% url 'core:professor_show_single_diagnosis' diagnosis.id  %}">Show This Appointment</a></div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+
+
+<div class="b-example-divider text-bg-light"></div>
+
+<section class="p-3 w-100 bg-white">
+    <div >
+      <h2 class="text-center text-dark left-aligned">All Courses </h2>
+  </div>
+  {% if not allcourses_Var %}
+  <div class="text-center container border mt-5 mb-5">
+  <p class="h1">No Courses </p>
+  </div>
+  {% endif %}
+ {% for course in allcourses_Var  %}
+  <div class="container col-xxl-8 px-0 py-0 mb-2 bg-light border rounded-5">
+    <div class="row flex-lg-row-reverse align-items-center g-5 py-5">
+     
+      <div class="col-sm-12 col-lg-6">
+        <a href="" class="text-decoration-none">
+        <img src="{{ course.course_img.url }}"  class="d-block mx-lg-auto img-fluid" alt="Bootstrap Themes" width="400" height="400" loading="lazy">
+      </a>
+      </div>
+    
+      <div class="col-lg-6">
+        <div class="card h-100 border-primary">
+            <div class="card-body p-2">
+                <div class="text-center">
+                  
+                  <p class="h6">Course name:</p>
+                    <p class="lead">{{course.course_name}}</span>
+                  
+                    <hr>
+                    
+                    <p class="h6">courses ID:</p>
+                    <p class="lead"> {{course.id}} </span>
+                    
+                    <hr>
+                    
+                    <p class="h6">Number of student:</p>
+                    <p class="lead">{{course.course_students.count}}</p>
+                    
+                    <hr>
+                    
+                   
+                    
+                </div>
+            </div>
+            
+            <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+                <div class="text-center"><a class="btn btn-outline-success mt-auto" href="{% url 'core:professor_show_course' course.id %}">Show This Course</a></div>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+
+</section>
+
+<div class="b-example-divider text-bg-light"></div>
+
+
+{% endblock sub_content %}
+

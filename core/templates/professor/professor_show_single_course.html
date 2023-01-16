@@ -1,0 +1,149 @@
+{% extends "../subbase.html" %}
+{% block title %}Professor Show Course{% endblock %}
+{% block sub_content %}
+
+
+        <div class="b-example-divider bg-light"></div>
+        <section class="p-5">
+            <div class="container">
+                <div>
+                    <h2 class="text-center text-dark m-4"> Course </h2>
+                </div>
+
+
+                
+                
+                <div class="row row-cols-1 row-cols-md-2 g-4">
+
+
+                    <div class=" col-md-4">
+                        <div class="card h-100 shadow-lg">
+                            <div class="card-body p-3">
+
+                                <div class="text-start mt-3">
+                                    <div
+                                        class="row row-cols-1 row-cols-md-2 g-4 align-items-center justify-content-center">
+                                        <p class="h6 col">course name :</p>
+                                        <p class="lead col">{{single_course_VAR.course_name}}</p>
+                                    </div>
+                                    <hr>
+
+                                    <div
+                                        class="row row-cols-1 row-cols-md-2 g-4 align-items-center justify-content-center">
+                                        <p class="h6 col">cours ID</p>
+                                        <p class="lead col">{{single_course_VAR.id}}</p>
+                                    </div>
+                                    <hr>
+                                    <div
+                                        class="row row-cols-1 row-cols-md-2 g-4 align-items-center justify-content-center">
+                                        <p class="h6 col">Number of student:</p>
+                                        <p class="lead col"> {{single_course_VAR.course_students.count}} </p>
+                                    </div>
+                                    <hr>
+
+
+
+                                </div>
+                            </div>
+
+
+
+                        </div>
+
+                    </div>
+
+                    <div class="col-md-8 text-center">
+                        <a href="{% url 'core:professor_add_students' single_course_VAR.id %}">
+                        <button class="btn btn-md btn-outline-primary float-end"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-fill-add" viewBox="0 0 16 16">
+                            <path d="M12.5 16a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Zm.5-5v1h1a.5.5 0 0 1 0 1h-1v1a.5.5 0 0 1-1 0v-1h-1a.5.5 0 0 1 0-1h1v-1a.5.5 0 0 1 1 0Zm-2-6a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/>
+                            <path d="M2 13c0 1 1 1 1 1h5.256A4.493 4.493 0 0 1 8 12.5a4.49 4.49 0 0 1 1.544-3.393C9.077 9.038 8.564 9 8 9c-5 0-6 3-6 4Z"/>
+                          </svg>Add a Student</button>
+                        </a>
+                        <table class="table table-striped table-hover caption-top">
+                            <caption class="text-dark fw-bold">Completed cases:{{finished_logbooks_VAR.count}}</caption>
+                            <thead>
+                                <tr>
+                                    <th scope="col">Student_ID</th>
+                                    <th scope="col">Student_name</th>
+                                    <th scope="col">Completed_Cases</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for student in student_logbook_VAR %}
+                                <tr>
+                                    <th scope="row"><a href="{% url 'core:professor_show_student' student.id %}" class="text-decoration-underline text-dark">{{student.id}}</a></th>
+                                    <td>{{student.student_user.name}}</td>
+                                    <td>{{student.completed_cases}}</td>
+
+                                   
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <section class="p-5 bg-light">
+            <div class="container mt-4">
+
+
+                <h2 class="text-center text-dark mt-3 mb-5">View All Apointment For Students</h2>
+                {% if not not_approved_logbooks_VAR %}
+                <div class="text-center container border m-5">
+                    <p class="h1">No LogBook </p>
+                </div>
+                {% else %}
+                <div class="row row-cols-1 row-cols-md-3 g-4 mt-3">
+                    {% for logbook  in not_approved_logbooks_VAR %}
+                    <div class="col ">
+                        <div class="card h-100 border-primary rounded-5 shadow-md">
+                
+                            <div class="card-body p-2">
+                                <div class="text-center">
+                                  
+                                    
+                                    <p class="h6">logbook Submitted date:</p>
+                                    <p class="lead"> {{logbook.logbook_date_Submitted}} </span>
+                                    
+                                    <hr>
+                                    
+                                    <p class="h6">Patient name:</p>
+                                    <p class="lead"> {{logbook.logbook_patient.patient_user.name}} </p>
+                                    
+                                    <hr>
+                                    
+                                    <p class="h6">phone number: </p>
+                                    <p class="lead">{{logbook.logbook_patient.patient_user.mobile}} </p>
+                                  
+                                  <hr>
+                                    <p class="h6">Patient ID::</p> 
+                                    <p class="lead">{{logbook.logbook_patient.id}} </p>
+                                    <hr>
+                                    <p class="h6">Student name:</p> 
+                                    <p class="lead">{{logbook.logbook_student.student_user.name}}</p>
+                                    <hr>
+                                    <p class="h6">Student ID:</p> 
+                                    <p class="lead">{{logbook.logbook_student.id}}</p>
+                                    
+                                </div>
+                            </div>
+                            
+                            <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+                                <div class="text-center"><a class="btn btn-success btn-md mt-auto rounded-pill" href="{% url 'core:professor_pending_logbook' logbook.id %}">Show This Appointment</a></div>
+                                <div class="text-center mt-2"><a class="btn btn-primary btn-md mt-auto rounded-pill" href="{% url 'core:professor_show_student' logbook.logbook_student.id %}">Show This Student</a></div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+        </section>
+        <div class="b-example-divider text-bg-light"></div>
+
+
+
+{% endblock sub_content %}

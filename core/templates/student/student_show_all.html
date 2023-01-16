@@ -1,0 +1,177 @@
+{% extends "../subbase.html" %}
+{% block title %}Student Show All{% endblock %}
+{% block sub_content %}
+
+
+
+<div class="b-example-divider bg-light"></div>
+<section class="py-5 bg-light mt-5">
+  <div class="container px-4 px-lg-5 mt-5">
+      <h2 class="fw-bolder mb-5">Show All appointment</h2>
+      
+      {% if not AllReservedTreatment_Var %}
+      <div class="text-center container border m-5">
+      <p class="h1">No Active Treatment </p>
+      </div>
+      {% endif %}
+      <div class="row row-cols-1 row-cols-lg-2 g-4 justify-content-center">
+  
+
+        {% for treatment in AllReservedTreatment_Var %}
+          <div class="col">
+              <div class="card h-100 border-primary">
+                  
+                  <div class="card-body p-2">
+                      <div class="text-center">
+                        
+                        <p class="h6">Treatment ID:</p>
+                          <p class="lead">{{treatment.id}}</p>
+                        
+                          <hr>
+                          
+                          <p class="h6">Treatment Appointment date:</p>
+                          <p class="lead"> {{treatment.treatment_date}} </p>
+                                
+                          <hr>
+                          
+                          <p class="h6">Patient Email: </p>
+                          <p class="lead">{{treatment.treatment_patient.patient_user.email}} </p>
+                        
+                        <hr>
+                          <p class="h6">Patient Name:</p> 
+                          <p class="lead">{{treatment.treatment_patient.patient_user.name}} </p>
+                          <hr>
+                          <p class="h6">Course Name:</p> 
+                          <p class="lead">{{treatment.treatment_course.course_name}} </p>
+                          
+                      </div>
+                  </div>
+                  
+                  <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+                      <div class="text-center"><a class="btn btn-outline-success mt-auto" href="{% url 'core:student_show_active_treatment' treatment.id %}">Show This Appointment</a></div>
+                  </div>
+              </div>
+          </div>
+
+          {% endfor %}
+
+
+
+      </div>
+  </div>
+</section>
+<div class="b-example-divider text-bg-light"></div>
+
+<section class="p-3 w-100 bg-white">
+    <div class="m-5" >
+      <h2 class="text-center text-dark left-aligned">All Courses </h2>
+  </div>
+  {% if not AllStudentcourse_Var %}
+  <div class="text-center container border m-5">
+  <p class="h1">No Course </p>
+  </div>
+  {% endif %}
+
+ {% for course in AllStudentcourse_Var %}
+  <div class="container col-xxl-8 px-0 py-0 mb-2 bg-light border rounded-5">
+    <div class="row flex-lg-row-reverse align-items-center g-5 py-5">
+     
+      <div class="col-sm-12 col-lg-6">
+        <a href="" class="text-decoration-none">
+        <img src="{{course.course_img.url}}"  class="d-block mx-lg-auto img-fluid" alt="Bootstrap Themes" width="700" height="500" loading="lazy">
+      </a>
+      </div>
+    
+      <div class="col-lg-6">
+        <div class="card h-100 border-primary">
+              
+            <div class="card-body p-2">
+                <div class="text-center">
+                  
+                  <p class="h6">Course name:</p>
+                    <p class="lead">{{course.course_name}}</span>
+                  
+                    <hr>
+                    
+                    <p class="h6">courses ID:</p>
+                    <p class="lead"> {{course.id}} </span>
+                    
+                    <hr>
+                    
+                    <p class="h6">Completed Cases:</p>
+                    <p class="lead"> {{course.completed_cases}} </p>
+                    
+                    <hr>
+                    
+                   
+                    
+                </div>
+            </div>
+            
+            <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+                <div class="text-center"><a class="btn btn-outline-primary mt-auto" href="{% url 'core:student_show_course' course.id  %}">Show This Course</a></div>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endfor %} 
+
+</section>
+<div class="b-example-divider text-bg-light"></div>
+
+<section class="py-5 bg-light mt-5 bg-light">
+    <div class="container px-4 px-lg-5 mt-5">
+        <h2 class="fw-bolder mb-5">Show All LogBooks</h2>
+        <div class="row row-cols-1 row-cols-lg-3 g-4 justify-content-center">
+          {% if not AllSubmittedlogBook_Var %}
+          <div class="text-center container border m-5">
+          <p class="h1">No LogBook </p>
+          </div>
+          {% endif %}
+
+           {% for logbook  in AllSubmittedlogBook_Var %}
+            <div class="col">
+                <div class="card h-100 border rounded-5  ">
+                    
+                    <div class="card-body p-2 ">
+                        <div class="text-center ">
+                          
+                          <p class="h6">Logbook ID:</p>
+                            <p class="lead">{{logbook.id}}</p>
+                          
+                            <hr>
+                            
+                            <p class="h6">Submitted date:</p>
+                            <p class="lead">{{logbook.logbook_date_Submitted}} </p>
+                            
+                            <hr>
+                            
+                            <p class="h6">Patient name:</p>
+                            <p class="lead"> {{logbook.logbook_patient.patient_user.name}} </p>
+                            
+                            <hr>
+                            
+                           
+                            
+                        </div>
+                    </div>
+                    
+                    <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+                        <div class="text-center"><a class="btn btn-warning mt-auto" href="{% url 'core:student_show_active_logbook' logbook.id %}">Show This LogBook</a></div>                    </div>
+                </div>
+            </div>
+  
+            {% endfor %}
+  
+
+  
+        </div>
+    </div>
+  </section>
+
+
+
+
+<div class="b-example-divider text-bg-light"></div>
+{% endblock sub_content %}

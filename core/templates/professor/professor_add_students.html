@@ -1,0 +1,33 @@
+{% extends "../base.html" %}
+{% load static %}
+
+{% block title %}professor Add Students{% endblock %}
+{% block content %} 
+
+<section class="bg-light shadow-lg m-5 " style="height:500px;">
+
+    <div class="container mt-4">
+
+        <h2 class="text-center text-dark">ADD More Students To This Course</h2>
+        <form class="account-form" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            
+            <label>{{ student_form.course_students.label}}</label>
+          {{ student_form.course_students }}
+          
+
+            <div class="card-footer p-4 pt-0 border-top-0 ">
+                <div class="text-center">
+                    <button class="btn  mt-auto btn-success w-50 rounded-pill" type="submit" >Save Changes</button>
+  
+
+                </div>
+                
+            </div>
+        </form>
+
+</section>
+
+
+{% endblock content %}
