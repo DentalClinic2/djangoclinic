@@ -1,0 +1,48 @@
+{% extends "../base.html" %}
+{% load static %}
+{% comment %} {% block stylesheet %}{% static 'css/footer.css' %}{% endblock %} {% endcomment %}
+{% block title %}Admin Show All Diagnoisis {% endblock %}
+
+
+{% block content %} 
+<div class="container"  style='min-height:500px;'>
+    <div class="row my-5">
+        <div class="col-md-12">
+            <h4>ALL Diagnosis</h4>
+            <a href="{% url 'core:admin_create_diagnosis' %}" class="btn btn-indigo btn-primary btn-sm m-0 float-end">Create</a>
+            <table class="table table-striped table-responsive-md table-hover mt-5 ">
+
+                <thead class="table-dark">
+                  <tr>
+                    <th>Diagnosis_ID</th>
+                    <th>Diagnosis</th>
+                    
+                    <th></th>
+                    <th></th
+                    
+                  </tr>
+                </thead>
+                
+                <tbody>
+                {% for diagnosis in all_diagnosis_VAR %}
+                  <tr>
+                    <th scope="row">{{diagnosis.id}}</th>
+                    <td><a class="text-dark" href="{% url 'core:admin_edit_diagnosis' diagnosis.id %}">{{diagnosis}}</a></td>
+                    <td>
+                        <a href="{% url 'core:admin_edit_diagnosis' diagnosis.id %}" class="btn btn-indigo btn-warning btn-sm m-0">Update</a>
+                    </td>
+                    <td>
+                        <a href="{% url 'core:admin_Delete_diagnosis' diagnosis.id %}" class="btn btn-indigo btn-danger btn-sm m-0">Delete</a>
+                    </td>
+                    
+                  </tr>
+                  {% endfor %}
+                </tbody>
+                
+                </table>
+            
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

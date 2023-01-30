@@ -1,0 +1,49 @@
+{% extends "../base.html" %}
+{% load static %}
+{% block title %}Edit Course{% endblock %}
+{% block content %}
+
+<section class="bg-light shadow-lg mt-5 mb-5 " style="min-height:500px;">
+
+<div class="container mt-4">
+
+<form class="account-form" method="post" enctype="multipart/form-data">
+    {% if Course_form_VAR.is_valid %}
+    <div class="alert alert-primary" role="alert">
+        Details successfully updated!
+    </div>
+    <p class="small text-center pt-0">
+        <a href="{% url "core:admin_show_all_courses" %}">Back to All Courses</a>
+    </p>
+    {%else%}
+    <h3>Change Course details</h3>
+    <p>You can edit Course details using the following form:</p>
+    {% endif %}
+    {% if Course_form_VAR.errors %}
+    <div class="alert alert-primary" role="alert">
+        Error: Please try again!
+    </div>
+    {% endif %}
+    {% csrf_token %}
+    <label class="small font-weight-bold">{{ Course_form_VAR.course_name.label}}</label>
+    {{ Course_form_VAR.course_name }}
+    <label class="small font-weight-bold">{{ Course_form_VAR.course_img.label}}</label>
+    {{ Course_form_VAR.course_img }}
+    <label class="small font-weight-bold">{{ Course_form_VAR.course_students.label}}</label>
+    {{ Course_form_VAR.course_students }}
+    <label class="small font-weight-bold">{{ Course_form_VAR.course_professors.label}}</label>
+    {{ Course_form_VAR.course_professors }}
+
+    <button class="btn btn-primary btn-block py-2 mb-4 mt-5 fw-bold w-100" type="submit" value="Save changes">Save
+        Changes</button>
+    <hr class="mb-3">
+</form>
+
+</div>
+</section>
+{% endblock content %}
+
+
+
+
+

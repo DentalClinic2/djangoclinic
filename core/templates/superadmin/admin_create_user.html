@@ -1,0 +1,84 @@
+{% extends "../base.html" %}
+{% load static %}
+{% block title %}Create User{% endblock %}
+{% block content %}
+
+<section class="bg-light shadow-lg mt-5 mb-5 " style="min-height:500px;">
+
+<div class="container mt-4">
+
+<form class="account-form" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <h3>Create User </h3>
+    <p>You can Create New User using the following form:</p>
+  
+    {% if user_Create_form_VAR.errors %}
+    <p>Please correct the following errors:</p>
+    {% for field in user_Create_form_VAR %}
+    {% if field.errors %}
+    <div class="alert alert-primary" role="alert">
+      {{ field.label }}: {{ field.errors|striptags }}
+    </div>
+    {% endif %}
+    {% endfor %}
+    {% endif %}
+    
+
+    
+    <label>{{ user_Create_form_VAR.name.label }}<span class="text-muted small">
+        (Required)</span></label>
+    {{ user_Create_form_VAR.name }}
+    <label>{{ user_Create_form_VAR.email.label}}<span class="text-muted small">
+        (Required)</span></label>
+    {{ user_Create_form_VAR.email }}
+    <label>{{ user_Create_form_VAR.password.label}}<span class="text-muted mb-4">
+      </span></label>
+    <small class="form-text text-muted mb-4 small">
+      At least 8 characters and 1 digit
+    </small>
+    {{ user_Create_form_VAR.password }}
+    <label>{{ user_Create_form_VAR.password2.label}}<span class="text-muted small">
+        (Required)</span></label>
+    {{ user_Create_form_VAR.password2 }}
+  
+    <label>{{ user_Create_form_VAR.mobile.label}}<span class="text-muted small">
+      (Required)</span></label>
+  {{ user_Create_form_VAR.mobile }}
+  
+  <label>{{ user_Create_form_VAR.address.label}}<span class="text-muted small">
+    (Required)</span></label>
+  {{ user_Create_form_VAR.address }}
+  
+  <label>{{ user_Create_form_VAR.gender.label}}<span class="text-muted small">
+    (Required)</span></label>
+  {{ user_Create_form_VAR.gender }}
+  
+  <label>{{ user_Create_form_VAR.birthdate.label}}<span class="text-muted small">
+    (Required)</span></label>
+  {{ user_Create_form_VAR.birthdate }}
+  
+  <label>{{ user_Create_form_VAR.nationality.label}}<span class="text-muted small">
+    (Required)</span></label>
+  {{ user_Create_form_VAR.nationality }}
+  <label>{{ user_Create_form_VAR.profile_img.label}}<span class="text-muted small">
+    (Optional)</span></label>
+  {{ user_Create_form_VAR.profile_img }}
+  <label>{{ user_Create_form_VAR.user_type.label}}<span class="text-muted small">
+    (Required)</span></label>
+    {{ user_Create_form_VAR.user_type }}
+    <label>{{ user_Create_form_VAR.usergroup.label}}<span class="text-muted small">
+        (Required)</span></label>
+        {{ user_Create_form_VAR.usergroup }} 
+
+
+    <button class="btn btn-success btn-block py-2 mb-4 mt-5 fw-bold w-100" type="submit" value="Create User">Create</button>
+    <hr class="mb-3">
+</form>
+
+</div>
+</section>
+{% endblock content %}
+
+
+
+

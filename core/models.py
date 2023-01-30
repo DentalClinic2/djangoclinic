@@ -84,7 +84,7 @@ class DiagnosisMedical(models.Model):
     diagnosis_patient=models.ForeignKey(Patient, verbose_name=_("Diagnosis Patient"), on_delete=models.CASCADE,blank=True,null=True)
     patient_chart=models.CharField(_("Patient Chart"), max_length=100,blank=True,null=True)
     patient_xray=models.ImageField(upload_to="Patient_Xray_upload",blank=True,null=True)
-    diagnosis_status = models.CharField(_("Diagnosis Status"),default=diagnosis_status_choices[0],choices=diagnosis_status_choices, max_length=10)
+    diagnosis_status = models.CharField(_("Diagnosis Status"),default=diagnosis_status_choices[0],choices=diagnosis_status_choices, max_length=256)
     class Meta:
         verbose_name = "diagnosis"
         verbose_name_plural = "diagnosises"
@@ -104,7 +104,7 @@ class TreatmentMedical(models.Model):
     treatment_date=models.DateTimeField(blank=True,null=True)
     treatment_student=models.ForeignKey(Student, verbose_name=_("Treatment Student"), on_delete=models.CASCADE,blank=True,null=True)
     treatment_diagnosis=models.ForeignKey(DiagnosisMedical, verbose_name=_("Treatment Diagnosis"), on_delete=models.SET_NULL,blank=True,null=True)
-    treatment_status=models.CharField(_("Treatment Status"),default=treatment_status_choices[0],choices=treatment_status_choices, max_length=10)
+    treatment_status=models.CharField(_("Treatment Status"),default=treatment_status_choices[0],choices=treatment_status_choices, max_length=256)
     treatment_patient=models.ForeignKey(Patient, verbose_name=_("Treatment Patient"), on_delete=models.CASCADE,blank=True,null=True)
     treatment_course=models.ForeignKey(Course, verbose_name=_("Treatment Course"), on_delete=models.CASCADE,blank=True,null=True)
     class Meta:
@@ -123,7 +123,7 @@ class LogbookMedical(models.Model):
     logbook_date_Submitted=models.DateTimeField(blank=True,null=True)
     logbook_student=models.ForeignKey(Student, verbose_name=_("Logbook Student"), on_delete=models.CASCADE,blank=True,null=True)
     logbook_treatment=models.OneToOneField(TreatmentMedical, verbose_name=_("Logbook Treatment "), on_delete=models.SET_NULL,blank=True,null=True)
-    logbook_status=models.CharField(_("Logbook Status"),default=logbook_status_choices[0],choices=logbook_status_choices, max_length=10)
+    logbook_status=models.CharField(_("Logbook Status"),default=logbook_status_choices[0],choices=logbook_status_choices, max_length=256)
     logbook_patient=models.ForeignKey(Patient, verbose_name=_("Logbook Patient"), on_delete=models.CASCADE,blank=True,null=True)
     logbook_professor=models.ForeignKey(Professor, verbose_name=_("Logbook Professor"), on_delete=models.CASCADE,blank=True,null=True)
     logbook_course=models.ForeignKey(Course, verbose_name=_("LogBook Course"), on_delete=models.CASCADE,blank=True,null=True)

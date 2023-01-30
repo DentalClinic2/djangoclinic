@@ -45,6 +45,23 @@ urlpatterns=[
     path('student/show/pending/treatments',views.student_show_all_pending_treatment,name="student_show_pending_treatments"),
     path('student/show/pending/treatment/<int:id>',views.student_show_single_pending_treatment,name="student_single_pending_treatment"),
     
+    #END Views OF Student
+    path('superadmin/show/alldiagnosis',views.admin_show_all_diagnosis,name="admin_show_all_diagnosis"),
+    path('superadmin/Edit/diagnosis/<int:id>',views.admin_Edit_diagnosis,name="admin_edit_diagnosis"),
+    path('superadmin/Create/diagnosis',views.admin_Create_diagnosis,name="admin_create_diagnosis"),
+    path('superadmin/Delete/diagnosis/<int:id>',views.admin_Delete_diagnosis,name="admin_Delete_diagnosis"),
+    
+    path('superadmin/show/Courses',views.admin_show_all_courses,name="admin_show_all_courses"),
+    path('superadmin/Edit/Course/<int:id>',views.admin_Edit_course,name="admin_edit_course"),
+    path('superadmin/Create/Course',views.admin_Create_course,name="admin_create_course"),
+    path('superadmin/Delete/Course/<int:id>',views.admin_Delete_course,name="admin_Delete_course"),
+         
+    path('superadmin/show/Users',views.admin_show_all_users,name="admin_show_all_users"),
+    path('superadmin/Create/User',views.admin_Create_user,name="admin_Create_user"),
+    path('superadmin/Delete/User/<int:id>',views.admin_Delete_user,name="admin_Delete_user"),
+    path('superadmin/Edit/User/<int:id>',views.admin_Edit_user,name="admin_Edit_user"),
+         
+    
     
 ]
 

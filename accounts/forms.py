@@ -4,7 +4,8 @@ from django.contrib.auth.forms import (AuthenticationForm, PasswordResetForm,
 
 from .models import Profile
 
-
+from datetime import date,timedelta
+import datetime
 
 #username here is email because we make username field in Profile USer as Email
 class UserLoginForm(AuthenticationForm):
@@ -206,6 +207,13 @@ class RegistrationForm(forms.ModelForm):
             raise forms.ValidationError(
                 'Please use another Email, that is already taken')
         return email
+    
+    def clean_birthdate(self):
+        birthdate = self.cleaned_data['birthdate']
+        
+        if (datetime.date.today() - birthdate)// timedelta(days=365.2425) <= 3:
+            raise forms.ValidationError('The date cannot be Set You Must Be 3 Years Old at Least!')
+        return birthdate
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -291,6 +299,15 @@ class UserEditForm(forms.ModelForm):
     class Meta:
         model = Profile
         fields = ('email','name','birthdate','nationality','mobile','address','gender','profile_img')
+
+
+    def clean_birthdate(self):
+        birthdate = self.cleaned_data['birthdate']
+
+        if (datetime.date.today() - birthdate)// timedelta(days=365.2425) <= 3:
+            raise forms.ValidationError('The date cannot be Set You Must Be 3 Years Old at Least!')
+        return birthdate
+
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

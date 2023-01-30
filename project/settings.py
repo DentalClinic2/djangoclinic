@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'accounts.apps.AccountsConfig',
     'bootstrap5',
     'core',
+    'django_filters',
 ]
 
 MIDDLEWARE = [
@@ -84,6 +85,17 @@ DATABASES = {
     }
 }
 
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'test',
+#         'HOST': '127.0.0.1',
+#         'PORT': '3306',
+#         'USER': 'root',
+#         'PASSWORD': 'admin@123',
+#     }
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
@@ -142,3 +154,5 @@ EMAIL_HOST_USER = 'dental.clinic.system2@gmail.com'
 EMAIL_HOST_PASSWORD = 'rkacvfwwzxqashqu'
 EMAIL_USE_TLS = True
 EMAIL_PORT = '587'
+
+

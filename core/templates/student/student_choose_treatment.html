@@ -6,15 +6,25 @@
 <div class="b-example-divider bg-light"></div>
 <section class="py-5 bg-light mt-5">
   <div class="container px-4 px-lg-5 mt-5">
-    {% if not notreservedtreatment_Var %}
+    {% if not notreservedtreatment_filter_VAR.qs %}
     <div class="text-center container border m-5">
     <p class="h1">No More Treatment Appointment </p>
     </div>
     
     {% else %}
-      <h2 class="fw-bolder mb-4">Student Take an appointment</h2>
+    <div class="row justify-content-center  mt-5 mb-5">
+      <h2 class="col-8 fw-bolder ">Student Take an appointment</h2>
+
+      <form  id="treatmentfilterform" method="get" class="col-4 " >
+          {{notreservedtreatment_filter_VAR.form}}
+
+        <div class='text-center'>  
+          <button id="subbutton" class="btn btn-sm btn-success ">search</button>
+          </div>
+      </form>
+    </div>
       <div class="row row-cols-1 row-cols-lg-3 g-4 justify-content-center">
-        {% for treatment in notreservedtreatment_Var %}
+        {% for treatment in notreservedtreatment_filter_VAR.qs %}
 
 
 

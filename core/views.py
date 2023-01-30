@@ -7,10 +7,11 @@ from django.http import HttpResponse
 from django.core.mail import send_mail
 from django.conf import settings
 from django.contrib import messages
-from .forms import ProfessorReferalForm,StudentADDForm,StudentSubmitReportForm,StudentTakeappointmentDateForm
+from .forms import ProfessorReferalForm,StudentADDForm,StudentSubmitReportForm,StudentTakeappointmentDateForm,AdminDiagnosisForm,AdminCourseForm,AdminRegisterForm,AdminEditForm
 from django.db.models import Count,Q,Max,Min
 from django.contrib.auth.decorators import login_required
-from .decorators import allowed_users 
+from .decorators import allowed_users,adminonly
+from .filters import LogbookFilter,TreatmentFilter
 # Create your views here.
 
 # View For displaying HomePage for all user
@@ -329,9 +330,10 @@ def professor_add_student_to_course(request,id):
 def professor_show_student(request,id):
     single_student=Student.objects.get(id=id)
     all_approved_student_logbook=LogbookMedical.objects.filter(logbook_student_id=single_student.id,logbook_status=2)
+    approved_logbook_filter=LogbookFilter(request.GET,queryset=all_approved_student_logbook)
     professorcourse=Course.objects.filter(course_professors__prof_user__id=request.user.id)
     all_pending_student_logbook=LogbookMedical.objects.filter(logbook_student=single_student,logbook_status=1,logbook_course__in=professorcourse.all())
-    context={'single_student_VAR':single_student,'all_approved_student_logbook_VAR':all_approved_student_logbook,'all_pending_student_logbook_VAR':all_pending_student_logbook,'professor_course_VAR':professorcourse}
+    context={'single_student_VAR':single_student,'all_approved_student_logbook_VAR':all_approved_student_logbook,'all_pending_student_logbook_VAR':all_pending_student_logbook,'professor_course_VAR':professorcourse,'approved_logbook_filter_VAR':approved_logbook_filter}
     return render(request,"professor/professor_show_single_student.html",context)
 
 @login_required
@@ -369,53 +371,58 @@ def student_show_single_active_treatment(request,id):
 @login_required
 @allowed_users(allowed_roles=['students'])
 def student_cancel_treatment_appointment(request,id):
-    canceledtreatment=TreatmentMedical.objects.get(id=id,treatment_status=1,treatment_student__student_user__id=request.user.id)
-    if request.user.id==canceledtreatment.treatment_student.student_user.id:
-        subject = "CanceledAppointment By Student" +str(canceledtreatment.treatment_student.student_user.name)
-        message = "Dear Patient: "+str(canceledtreatment.treatment_patient.patient_user.name)+" We wanted to inform you that the Student "+str(canceledtreatment.treatment_student.student_user.name)+" has canceled Your Treatment appointment.\n"
-        patient_email = canceledtreatment.treatment_patient.patient_user.email
-        send_mail(subject=subject,
-                  message=message,
-                  from_email=settings.EMAIL_HOST_USER,
-                  recipient_list=[patient_email],
-                  fail_silently=False)
-        canceledtreatment.treatment_student=None
-        canceledtreatment.treatment_status=0
-        canceledtreatment.save()
-        messages.success(request, ("Your Treatment Cancelled Successfully!"))
-        return redirect(reverse('core:student_show_all'))
-    else:
-        return HttpResponse("<h1>You are Not Authorized To Access Here</h1>")
+    try:
+        canceledtreatment=TreatmentMedical.objects.get(id=id,treatment_status=1,treatment_student__student_user__id=request.user.id)
+        if request.user.id==canceledtreatment.treatment_student.student_user.id:
+            subject = "CanceledAppointment By Student" +str(canceledtreatment.treatment_student.student_user.name)
+            message = "Dear Patient: "+str(canceledtreatment.treatment_patient.patient_user.name)+" We wanted to inform you that the Student "+str(canceledtreatment.treatment_student.student_user.name)+" has canceled Your Treatment appointment.\n"
+            patient_email = canceledtreatment.treatment_patient.patient_user.email
+            send_mail(subject=subject,
+                    message=message,
+                    from_email=settings.EMAIL_HOST_USER,
+                    recipient_list=[patient_email],
+                    fail_silently=False)
+            canceledtreatment.treatment_student=None
+            canceledtreatment.treatment_status=0
+            canceledtreatment.save()
+            messages.success(request, ("Your Treatment Cancelled Successfully!"))
+            return redirect(reverse('core:student_show_all'))
+        else:
+            return HttpResponse("<h1>You are Not Authorized To Access Here</h1>")
+    except:
+        return render(request,"error404.html")
         
 
 @login_required
 @allowed_users(allowed_roles=['students'])
 def student_write_logbook(request,id):
-    single_treatment=TreatmentMedical.objects.get(id=id,treatment_student__student_user__id=request.user.id,treatment_status=1)
-    if request.method == 'POST':
-        report_form = StudentSubmitReportForm(request.POST,request.FILES)
-    
-        if report_form.is_valid():
+    try:
+        single_treatment=TreatmentMedical.objects.get(id=id,treatment_student__student_user__id=request.user.id,treatment_status=1)
+        if request.method == 'POST':
+            report_form = StudentSubmitReportForm(request.POST,request.FILES)
+        
+            if report_form.is_valid():
 
 
-            report=report_form.save(commit=False)
+                report=report_form.save(commit=False)
 
-            
-            if report.logbook_report:
-                LogbookMedical.objects.create(logbook_treatment=single_treatment,logbook_status=1,logbook_patient=single_treatment.treatment_patient,logbook_course=single_treatment.treatment_course,logbook_report=report.logbook_report,logbook_student=single_treatment.treatment_student,logbook_date_Submitted=datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S"))
-                single_treatment.treatment_status=5
-                single_treatment.save()
-                print('Succesfully Submit')
-                single_treatment.treatment_status=5
-                single_treatment.save()
                 
-            return redirect('core:student_show_all')
+                if report.logbook_report:
+                    LogbookMedical.objects.create(logbook_treatment=single_treatment,logbook_status=1,logbook_patient=single_treatment.treatment_patient,logbook_course=single_treatment.treatment_course,logbook_report=report.logbook_report,logbook_student=single_treatment.treatment_student,logbook_date_Submitted=datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S"))
+                    single_treatment.treatment_status=5
+                    single_treatment.save()
+                    print('Succesfully Submit')
 
-    else:
-        report_form = StudentSubmitReportForm()
+                    
+                return redirect('core:student_show_all')
 
-    context={'single_treatment_VAR':single_treatment,'Report_Form_Var':report_form}
-    return render(request,"student/student_write_logbook.html",context)
+        else:
+            report_form = StudentSubmitReportForm()
+
+        context={'single_treatment_VAR':single_treatment,'Report_Form_Var':report_form}
+        return render(request,"student/student_write_logbook.html",context)
+    except:
+        return render(request,"error404.html")
 
 @login_required
 @allowed_users(allowed_roles=['students'])
@@ -462,11 +469,11 @@ def student_choose_treatment_appointment(request):
         reservedtreatmentcourse.append(instance.treatment_course)
 
     notreservedtreatment=TreatmentMedical.objects.filter(treatment_status=0,treatment_course__in=studentcourses).exclude(treatment_course__in=reservedtreatmentcourse)
+    notreservedtreatment_filter=TreatmentFilter(request.GET,queryset=notreservedtreatment)
 
 
 
-
-    context = {'notreservedtreatment_Var': notreservedtreatment,'Reservedtreatment_VAR':Reservedtreatment}
+    context = {'notreservedtreatment_Var': notreservedtreatment,'Reservedtreatment_VAR':Reservedtreatment,'notreservedtreatment_filter_VAR':notreservedtreatment_filter}
     return render(request, 'student/student_choose_treatment.html', context)
 
 
@@ -475,34 +482,38 @@ def student_choose_treatment_appointment(request):
 @login_required
 @allowed_users(allowed_roles=['students'])
 def student_show_single_unreserved_treatment(request,id):
-    studentcourses=Course.objects.filter(course_students__student_user__id=request.user.id)
-    studentinstance=Student.objects.get(student_user__id=request.user.id)
-    Reservedtreatment=TreatmentMedical.objects.filter(treatment_status=1,treatment_course__in=studentcourses.all(),treatment_student=studentinstance)
-    reservedtreatmentcourse=[]
-    for instance in Reservedtreatment.all():
-        reservedtreatmentcourse.append(instance.treatment_course)
-    unreservedtreatment=TreatmentMedical.objects.exclude(treatment_course__in=reservedtreatmentcourse).get(id=id,treatment_status=0,treatment_course__in=studentcourses)
-    ALLFinsishedLogbooks=LogbookMedical.objects.filter(logbook_status=2)
+    try:
+        studentcourses=Course.objects.filter(course_students__student_user__id=request.user.id)
+        studentinstance=Student.objects.get(student_user__id=request.user.id)
+        Reservedtreatment=TreatmentMedical.objects.filter(treatment_status=1,treatment_course__in=studentcourses.all(),treatment_student=studentinstance)
+        reservedtreatmentcourse=[]
+        for instance in Reservedtreatment.all():
+            reservedtreatmentcourse.append(instance.treatment_course)
+        unreservedtreatment=TreatmentMedical.objects.exclude(treatment_course__in=reservedtreatmentcourse).get(id=id,treatment_status=0,treatment_course__in=studentcourses)
+        ALLFinsishedLogbooks=LogbookMedical.objects.filter(logbook_status=2)
 
-    if request.method == 'POST':
-        DateTimeform = StudentTakeappointmentDateForm(request.POST,request.FILES)
-    
-        if DateTimeform.is_valid():
+        if request.method == 'POST':
+            DateTimeform = StudentTakeappointmentDateForm(request.POST,request.FILES)
+        
+            if DateTimeform.is_valid():
 
-            form=DateTimeform.save(commit=False)
-            unreservedtreatment.treatment_status=1
-            unreservedtreatment.treatment_student=studentinstance
-            unreservedtreatment.treatment_date=form.treatment_date
-            unreservedtreatment.save()
-            print('Succesfully Submit')
-            return redirect('core:student_choose_treatment')
+                form=DateTimeform.save(commit=False)
+                unreservedtreatment.treatment_status=1
+                unreservedtreatment.treatment_student=studentinstance
+                unreservedtreatment.treatment_date=form.treatment_date
+                unreservedtreatment.save()
+                print('Succesfully Submit')
+                return redirect('core:student_choose_treatment')
 
-    else:
-        DateTimeform = StudentTakeappointmentDateForm()
+        else:
+            DateTimeform = StudentTakeappointmentDateForm()
 
-    
-    context={'unreservedtreatment_VAR':unreservedtreatment,'ALLFinsishedLogbooks_VAR':ALLFinsishedLogbooks,'DateTimeform_VAR':DateTimeform}
-    return render(request, 'student/student_show_treatment.html', context)
+        
+        context={'unreservedtreatment_VAR':unreservedtreatment,'ALLFinsishedLogbooks_VAR':ALLFinsishedLogbooks,'DateTimeform_VAR':DateTimeform}
+        return render(request, 'student/student_show_treatment.html', context)
+    except:
+        return render(request,"error404.html")
+
 
 
 @login_required
@@ -515,35 +526,244 @@ def student_show_all_pending_treatment(request):
 @login_required
 @allowed_users(allowed_roles=['students'])
 def student_show_single_pending_treatment(request,id):
-    SinglePendingTreatment=TreatmentMedical.objects.get(id=id,treatment_status=3,treatment_student__student_user__id=request.user.id)
-    if request.method == 'POST':
-        DateTimeform = StudentTakeappointmentDateForm(request.POST,request.FILES)
+    try:
+        SinglePendingTreatment=TreatmentMedical.objects.get(id=id,treatment_status=3,treatment_student__student_user__id=request.user.id)
+        if request.method == 'POST':
+            DateTimeform = StudentTakeappointmentDateForm(request.POST,request.FILES)
 
-        if DateTimeform.is_valid():
-            if request.user.id==SinglePendingTreatment.treatment_student.student_user.id:
+            if DateTimeform.is_valid():
+                if request.user.id==SinglePendingTreatment.treatment_student.student_user.id:
 
 
-                form=DateTimeform.save(commit=False)
-                SinglePendingTreatment.treatment_status=1
-                SinglePendingTreatment.treatment_date=form.treatment_date
-                SinglePendingTreatment.save()
-                subject = "New-Appointment Date" 
-                message = "Dear Patient: "+str(SinglePendingTreatment.treatment_patient.patient_user.name)+" We wanted to inform you that the Student "+str(SinglePendingTreatment.treatment_student.student_user.name)+" has Reserve Another Date For Your Treatment appointment.\n"+"\n the Treatment Will Be In"+str(SinglePendingTreatment.treatment_date)
-                patient_email = SinglePendingTreatment.treatment_patient.patient_user.email
-                send_mail(subject=subject,
-                message=message,
-                from_email=settings.EMAIL_HOST_USER,
-                recipient_list=[patient_email],
-                fail_silently=False)
-                print('Succesfully Submit')
-                return redirect('core:student_show_pending_treatments')
-            else:
-                return HttpResponse("<h1>You are Not Authorized To Access Here</h1>")
+                    form=DateTimeform.save(commit=False)
+                    SinglePendingTreatment.treatment_status=1
+                    SinglePendingTreatment.treatment_date=form.treatment_date
+                    SinglePendingTreatment.save()
+                    subject = "New-Appointment Date" 
+                    message = "Dear Patient: "+str(SinglePendingTreatment.treatment_patient.patient_user.name)+" We wanted to inform you that the Student "+str(SinglePendingTreatment.treatment_student.student_user.name)+" has Reserve Another Date For Your Treatment appointment.\n"+"\n the Treatment Will Be In"+str(SinglePendingTreatment.treatment_date)
+                    patient_email = SinglePendingTreatment.treatment_patient.patient_user.email
+                    send_mail(subject=subject,
+                    message=message,
+                    from_email=settings.EMAIL_HOST_USER,
+                    recipient_list=[patient_email],
+                    fail_silently=False)
+                    print('Succesfully Submit')
+                    return redirect('core:student_show_pending_treatments')
+                else:
+                    return HttpResponse("<h1>You are Not Authorized To Access Here</h1>")
 
+        else:
+            DateTimeform = StudentTakeappointmentDateForm()
+        context={'SinglePendingTreatment_VAR':SinglePendingTreatment,'DateTimeform_VAR':DateTimeform}
+        return render(request,"student/student_single_pending_treatment.html",context)
+    except:
+        return render(request,"error404.html")
+
+
+#ADMIN Views
+
+@login_required
+@adminonly
+def admin_show_all_diagnosis(request):
+    if request.user.is_superuser:
+        diagnosis_list=DiagnosisMedical.objects.all()
+        context={'all_diagnosis_VAR':diagnosis_list}
+        return render(request,'superadmin/admin_show_all_diagnosis.html',context)
     else:
-        DateTimeform = StudentTakeappointmentDateForm()
-    context={'SinglePendingTreatment_VAR':SinglePendingTreatment,'DateTimeform_VAR':DateTimeform}
-    return render(request,"student/student_single_pending_treatment.html",context)
+        return HttpResponse("<h1>You are Not Authorized To Access Here</h1>")
+
+
+@login_required
+@adminonly
+def admin_Edit_diagnosis(request,id):
+    if request.user.is_superuser:
+        single_diagnosis=DiagnosisMedical.objects.get(id=id)
+        if request.method=="POST":
+            Diagnosis_form=AdminDiagnosisForm(request.POST,request.FILES,instance=single_diagnosis)
+            if Diagnosis_form.is_valid():
+                Diagnosis_form.save()
+        else:
+            Diagnosis_form=AdminDiagnosisForm(instance=single_diagnosis)
+
+        return render(request,'superadmin/admin_edit_diagnosis.html',{"Diagnosis_form_VAR":Diagnosis_form,"Single_Diagnosis_Var":single_diagnosis})
+    else:
+        return HttpResponse("<h1>You are Not Authorized To Access Here</h1>")
+    
+@login_required
+@adminonly
+def admin_Create_diagnosis(request):
+    if request.user.is_superuser:
+        if request.method=="POST":
+            Diagnosis_Create_form=AdminDiagnosisForm(request.POST,request.FILES)
+            if Diagnosis_Create_form.is_valid():
+                
+                form=Diagnosis_Create_form.save(commit=False)
+                form.diagnosis_status=0
+                form.save()
+                return redirect(reverse('core:admin_show_all_diagnosis'))
+        else:
+            Diagnosis_Create_form=AdminDiagnosisForm()
+
+        return render(request,'superadmin/admin_create_diagnosis.html',{"Diagnosis_Create_form_VAR":Diagnosis_Create_form})
+    else:
+        return HttpResponse("<h1>You are Not Authorized To Access Here</h1>")
+
+@login_required
+@adminonly
+def admin_Delete_diagnosis(request,id):
+        if request.user.is_superuser:
+            single_deleted_diagnosis=DiagnosisMedical.objects.get(id=id)
+            single_deleted_diagnosis.delete()
+            return redirect(reverse('core:admin_show_all_diagnosis'))
+        else:
+            return HttpResponse("<h1>You are Not Authorized To Access Here</h1>")
+
+
+@login_required
+@adminonly
+def admin_show_all_courses(request):
+    if request.user.is_superuser:
+        courses_list=Course.objects.all()
+        context={'all_courses_VAR':courses_list}
+        return render(request,'superadmin/admin_show_all_courses.html',context)
+    else:
+        return HttpResponse("<h1>You are Not Authorized To Access Here</h1>")
+
+
+@login_required
+@adminonly
+def admin_Edit_course(request,id):
+    if request.user.is_superuser:
+        single_course=Course.objects.get(id=id)
+        if request.method=="POST":
+            Course_form=AdminCourseForm(request.POST,request.FILES,instance=single_course)
+            if Course_form.is_valid():
+                form=Course_form.save(commit=False)
+                form.save()
+                Course_form.save_m2m()
+        else:
+            Course_form=AdminCourseForm(instance=single_course)
+
+        return render(request,'superadmin/admin_edit_course.html',{"Course_form_VAR":Course_form,"Single_Course_Var":single_course})
+    else:
+        return HttpResponse("<h1>You are Not Authorized To Access Here</h1>")
+    
+@login_required
+@adminonly
+def admin_Create_course(request):
+    if request.user.is_superuser:
+        if request.method=="POST":
+            Course_Create_form=AdminCourseForm(request.POST,request.FILES)
+            if Course_Create_form.is_valid():
+                form=Course_Create_form.save(commit=False)
+                form.save()
+                Course_Create_form.save_m2m()
+                return redirect(reverse('core:admin_show_all_courses'))
+        else:
+            Course_Create_form=AdminCourseForm()
+
+        return render(request,'superadmin/admin_create_course.html',{"Course_Create_form_VAR":Course_Create_form})
+    else:
+        return HttpResponse("<h1>You are Not Authorized To Access Here</h1>")
+
+@login_required
+@adminonly
+def admin_Delete_course(request,id):
+        if request.user.is_superuser:
+            single_deleted_course=Course.objects.get(id=id)
+            single_deleted_course.delete()
+            return redirect(reverse('core:admin_show_all_courses'))
+        else:
+            return HttpResponse("<h1>You are Not Authorized To Access Here</h1>")
+        
+
+
+
+@login_required
+@adminonly
+def admin_show_all_users(request):
+    if request.user.is_superuser:
+        users_list=Profile.objects.all()
+        context={'all_users_VAR':users_list}
+        return render(request,'superadmin/admin_show_all_users.html',context)
+    else:
+        return HttpResponse("<h1>You are Not Authorized To Access Here</h1>")
+
+
+@login_required
+@adminonly
+def admin_Edit_user(request,id):
+    if request.user.is_superuser:
+        single_user=Profile.objects.get(id=id)
+        if request.method=="POST":
+            user_edit_form=AdminEditForm(request.POST,request.FILES,instance=single_user)
+            if user_edit_form.is_valid():
+                user_edit_form.save()
+
+        else:
+            user_edit_form=AdminEditForm(instance=single_user)
+
+        return render(request,'superadmin/admin_edit_user.html',{"user_edit_form_VAR":user_edit_form,"Single_user_Var":single_user})
+    else:
+        return HttpResponse("<h1>You are Not Authorized To Access Here</h1>")
+    
+@login_required
+@adminonly
+def admin_Create_user(request):
+    if request.user.is_superuser:
+        if request.method=="POST":
+            user_Create_form=AdminRegisterForm(request.POST,request.FILES)
+            if user_Create_form.is_valid():
+                user=user_Create_form.save(commit=False)
+                user.email = user_Create_form.cleaned_data["email"]
+                user.mobile = user_Create_form.cleaned_data["mobile"]
+                user.nationality = user_Create_form.cleaned_data["nationality"]
+                user.address = user_Create_form.cleaned_data["address"]
+                user.birthdate = user_Create_form.cleaned_data["birthdate"]
+                user.gender = user_Create_form.cleaned_data["gender"]
+ 
+                user.set_password(user_Create_form.cleaned_data["password"])
+                user.is_active = True
+                user.user_type=user_Create_form.cleaned_data["user_type"]
+                user.save()
+                user.groups.set(user_Create_form.cleaned_data["usergroup"]) 
+ 
+                if user.user_type==0:
+                    Professor.objects.create(prof_user=user,)
+ 
+                elif user.user_type==1:
+                    Student.objects.create(student_user=user,)
+  
+                elif user.user_type==2:
+                    Patient.objects.create(patient_user=user,)
+  
+
+                return redirect(reverse('core:admin_show_all_users'))
+        else:
+            user_Create_form=AdminRegisterForm()
+
+        return render(request,'superadmin/admin_create_user.html',{"user_Create_form_VAR":user_Create_form})
+    else:
+        return HttpResponse("<h1>You are Not Authorized To Access Here</h1>")
+
+
+
+
+@login_required
+@adminonly
+def admin_Delete_user(request,id):
+        if request.user.is_superuser:
+            single_deleted_user=Profile.objects.get(id=id)
+            single_deleted_user.delete()
+            return redirect(reverse('core:admin_show_all_users'))
+        else:
+            return HttpResponse("<h1>You are Not Authorized To Access Here</h1>")
+        
+
+
+
+
+
 
 
 

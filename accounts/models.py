@@ -1,5 +1,5 @@
 # Create your models here.
-from datetime import date
+from datetime import date,timedelta
 from django.db import models
 from project import settings
 from django.db.models.signals import post_save
@@ -11,6 +11,8 @@ from django.contrib.auth.models import (AbstractBaseUser, BaseUserManager,
 from django.core.mail import send_mail
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+import datetime
+from django.core.exceptions import ValidationError
 
 def profile_image_upload(instance,filename):
     txt='imgprofile_'
@@ -201,16 +203,17 @@ class Profile(AbstractBaseUser, PermissionsMixin):
     is_superuser= models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    nationality=models.CharField(max_length=20,choices=countries_choices)
+    nationality=models.CharField(max_length=50,choices=countries_choices)
     address=models.CharField(max_length=50)
-    gender=models.CharField(max_length=20,choices=gender_choice)
+    gender=models.CharField(max_length=50,choices=gender_choice)
     birthdate=models.DateField(_("Birth Date"),blank=False,null=True)
-    user_type = models.CharField(default=user_type_data[2], choices=user_type_data, max_length=10)
+    user_type = models.CharField(default=user_type_data[2], choices=user_type_data,max_length=256)
     profile_img=models.ImageField(upload_to="profile_image_upload",default="profile2.png")
+ 
 
     objects = CustomAccountManager()
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['name']
+    REQUIRED_FIELDS = ['name','birthdate']
 
     class Meta:
         verbose_name = "Accounts"
@@ -227,6 +230,12 @@ class Profile(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.name
+    
+
+    def save(self, *args, **kwargs):
+        if  (datetime.date.today() - self.birthdate)// timedelta(days=365.2425) <= 3 :
+            raise ValidationError("The date cannot be Set He Must Be 3 Years Old at Least!")
+        super(Profile, self).save(*args, **kwargs)
 
 # @receiver(post_save,sender=Profile)
 # def create_patient_profile(sender,instance,created,**kwargs):
